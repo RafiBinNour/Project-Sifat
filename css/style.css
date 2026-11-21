@@ -1,0 +1,2045 @@
+/* ============================================================================
+   LOVE IN BLOOM — style.css
+   A premium romantic experience. Organised in clear sections:
+
+   01. Design tokens (colours, gradients, shadows, radii, spacing, motion)
+   02. Reset & base
+   03. Typography helpers
+   04. Utility classes
+   05. Background scene (aurora, canvas, vignette)
+   06. Layout & view transitions
+   07. Card shell (glassmorphism)
+   08. Mascot
+   09. Buttons
+   10. Proposal card
+   11. Celebration card (badge, love meter, features, quote)
+   12. Love letter & envelope
+   13. Footer & misc
+   14. Keyframes
+   15. Responsive breakpoints
+   16. Reduced motion
+   ========================================================================== */
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   01. DESIGN TOKENS
+   Change the palette here and the whole site follows.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* ---- Brand colours ---- */
+  --rose:       #FF4F87;
+  --rose-deep:  #E62E67;
+  --blossom:    #FFB7D5;
+  --lavender:   #B69CFF;
+  --violet:     #8B5CF6;
+  --peach:      #FFB38A;
+  --gold:       #FFDFA6;
+  --cream:      #FFF9F5;
+
+  /* ---- Support colours ---- */
+  --ink:        #3B2340;
+  --ink-soft:   #6C5572;
+  --ink-faint:   #8B7591;
+  --white:      #FFFFFF;
+  --paper:      #FFFBF3;
+  --glass:      rgba(255, 255, 255, 0.62);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --stroke:     rgba(255, 255, 255, 0.72);
+
+  /* ---- Gradients ---- */
+  --grad-rose:   linear-gradient(135deg, #FF6F9C 0%, #FF4F87 45%, #E62E67 100%);
+  --grad-muted:  linear-gradient(135deg, #C9BEE0 0%, #B4A6D4 55%, #A797CB 100%);
+  --grad-title:  linear-gradient(100deg, #FF4F87 0%, #C88BFF 28%, #8B5CF6 48%, #FF7FA8 72%, #FFB38A 100%);
+  --grad-lav:    linear-gradient(135deg, #C9B6FF 0%, #9B7BF6 100%);
+  --grad-peach:  linear-gradient(135deg, #FFD3B4 0%, #FFA987 100%);
+  --grad-gold:   linear-gradient(135deg, #FFEFC9 0%, #FFCF8E 100%);
+  --grad-meter:  linear-gradient(90deg, #FFB38A, #FFDFA6, #B69CFF, #FF4F87, #FFDFA6, #FFB38A);
+  --grad-glass:  linear-gradient(160deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.56) 48%, rgba(255, 246, 250, 0.68) 100%);
+  --grad-edge:   linear-gradient(140deg, #FF9EC4 0%, #FFE0AE 26%, #C9B6FF 55%, #FF8FB6 78%, #FFD9A8 100%);
+
+  /* ---- Shadows ---- */
+  /* Single-layer shadows: each extra layer is another blur the compositor
+     has to rasterise on every repaint. */
+  --shadow-xl:   0 30px 70px -28px rgba(112, 31, 79, 0.34);
+  --shadow-lg:   0 20px 46px -20px rgba(112, 31, 79, 0.3);
+  --shadow-md:   0 12px 28px -14px rgba(112, 31, 79, 0.26);
+  --shadow-sm:   0 5px 14px -8px rgba(112, 31, 79, 0.22);
+  --shadow-rose: 0 14px 30px -12px rgba(255, 79, 135, 0.6);
+  --shadow-rose-hover: 0 20px 40px -12px rgba(255, 79, 135, 0.7);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+
+  /* ---- Radii ---- */
+  --r-xs: 10px;
+  --r-sm: 14px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+  --r-2xl: 44px;
+  --r-pill: 999px;
+
+  /* ---- Spacing scale ---- */
+  --s-1: 0.35rem;
+  --s-2: 0.6rem;
+  --s-3: 0.85rem;
+  --s-4: 1.15rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 2.75rem;
+  --s-8: 3.5rem;
+  --s-9: 4.5rem;
+
+  /* ---- Typography ---- */
+  --font-ui: 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+  --font-script: 'Dancing Script', 'Segoe Script', cursive;
+
+  /* ---- Motion ---- */
+  --t-fast: 180ms;
+  --t-mid: 320ms;
+  --t-slow: 560ms;
+  --t-xslow: 900ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Layout ---- */
+  --card-max: 620px;
+  --shell-max: 1140px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   02. RESET & BASE
+   ══════════════════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  font-size: clamp(15px, 0.28vw + 14.2px, 17px);
+}
+
+body {
+  min-height: 100svh;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink);
+  /* Static colour only. The gradient artwork lives on the fixed .scene layer
+     (see below) — keeping it off <body> avoids a full-page repaint on scroll. */
+  background-color: #FCEEF6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Removes the ~300ms double-tap delay on touch viewports. */
+  touch-action: manipulation;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+canvas { display: block; max-width: 100%; }
+
+img { height: auto; }
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button { cursor: pointer; }
+
+ul[role='list'] { list-style: none; padding: 0; }
+
+::selection {
+  background: rgba(255, 79, 135, 0.24);
+  color: var(--ink);
+}
+
+/* Accessible focus ring — only for keyboard users */
+:focus-visible {
+  outline: 3px solid rgba(139, 92, 246, 0.75);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+[hidden] { display: none !important; }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   03. TYPOGRAPHY HELPERS
+   ══════════════════════════════════════════════════════════════════════════ */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--r-pill);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--violet);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.94), rgba(255, 236, 246, 0.9));
+  border: 1px solid rgba(182, 156, 255, 0.42);
+  box-shadow: 0 6px 18px -10px rgba(139, 92, 246, 0.5), var(--shadow-inset);
+}
+
+.eyebrow--tight {
+  letter-spacing: 0.14em;
+  font-size: 0.66rem;
+}
+
+.eyebrow__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--grad-rose);
+  box-shadow: 0 0 0 4px rgba(255, 79, 135, 0.16);
+  animation: dotPulse 2.4s var(--ease-in-out) infinite;
+  will-change: transform;
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.15rem, 6.4vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  background: var(--grad-title);
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-bottom: 0.12em; /* keeps descenders from clipping */
+}
+
+.card__subtitle {
+  max-width: 42ch;
+  margin-inline: auto;
+  font-size: clamp(0.94rem, 1.6vw, 1.05rem);
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.panel__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3.6vw, 2.05rem);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.panel__subtitle {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin-inline: auto;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   04. UTILITY CLASSES
+   ══════════════════════════════════════════════════════════════════════════ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  z-index: 999;
+  transform: translate(-50%, -150%);
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  color: var(--violet);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--t-mid) var(--ease-out);
+}
+
+.skip-link:focus { transform: translate(-50%, 0); }
+
+/* Scroll-reveal used by IntersectionObserver */
+.reveal {
+  opacity: 0;
+  transform: translateY(34px) scale(0.985);
+  transition:
+    opacity var(--t-xslow) var(--ease-out),
+    transform var(--t-xslow) var(--ease-out);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.noscript {
+  position: relative;
+  z-index: 50;
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 1rem 1.4rem;
+  text-align: center;
+  border-radius: var(--r-md);
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   05. BACKGROUND SCENE
+   ══════════════════════════════════════════════════════════════════════════ */
+/* The page gradient, painted once into its own composited layer.
+   This replaces `background-attachment: fixed` on <body>, which is one of the
+   most reliable ways to make a long page scroll badly. */
+.scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(120% 88% at 10% 4%,  #FFD6E7 0%, rgba(255, 214, 231, 0) 58%),
+    radial-gradient(104% 84% at 90% 2%,  #E0D4FF 0%, rgba(224, 212, 255, 0) 54%),
+    radial-gradient(96% 78% at 82% 96%,  #FFE3C9 0%, rgba(255, 227, 201, 0) 58%),
+    radial-gradient(110% 92% at 6% 98%,  #FFC9DE 0%, rgba(255, 201, 222, 0) 56%),
+    linear-gradient(158deg, #FFF1F7 0%, #F6EBFF 34%, #FFEFE1 66%, #FFE6F1 100%);
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Promote once; both children then animate on the compositor. */
+  contain: strict;
+  will-change: transform;
+}
+
+.scene__aurora {
+  position: absolute;
+  inset: -18%;
+  /* No filter here on purpose. A 46px blur across the whole viewport forced
+     the compositor to re-blur every frame on weak GPUs. The radial gradients
+     below are already soft, so the visual cost of removing it is ~nil. */
+  will-change: opacity;
+  animation: auroraBreathe 24s var(--ease-in-out) infinite;
+}
+
+/* Opacity-only: the blobs keep gently shifting in intensity without any of
+   them being re-composited individually. */
+@keyframes auroraBreathe {
+  0%, 100% { opacity: 0.72; }
+  50%      { opacity: 1; }
+}
+
+.aurora {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  opacity: 0.55;
+  /* Deliberately no will-change: promoting five viewport-sized gradients to
+     separate layers cost ~20fps on integrated graphics for motion nobody
+     notices. They now sit still; the wrapper does a single opacity breathe. */
+}
+
+.aurora--rose {
+  top: 4%;
+  left: -6%;
+  width: 46vw;
+  height: 46vw;
+  min-width: 320px;
+  min-height: 320px;
+  background: radial-gradient(circle at 40% 40%, rgba(255, 118, 165, 0.85), rgba(255, 118, 165, 0) 68%);
+}
+
+.aurora--violet {
+  top: -10%;
+  right: -8%;
+  width: 52vw;
+  height: 52vw;
+  min-width: 340px;
+  min-height: 340px;
+  background: radial-gradient(circle at 55% 45%, rgba(150, 112, 250, 0.72), rgba(150, 112, 250, 0) 66%);
+}
+
+.aurora--peach {
+  bottom: -14%;
+  right: 6%;
+  width: 44vw;
+  height: 44vw;
+  min-width: 300px;
+  min-height: 300px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 168, 128, 0.8), rgba(255, 168, 128, 0) 68%);
+}
+
+.aurora--gold {
+  bottom: -8%;
+  left: 2%;
+  width: 36vw;
+  height: 36vw;
+  min-width: 260px;
+  min-height: 260px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 216, 150, 0.58), rgba(255, 216, 150, 0) 66%);
+  opacity: 0.3;
+}
+
+.aurora--blossom {
+  top: 34%;
+  left: 38%;
+  width: 40vw;
+  height: 40vw;
+  min-width: 280px;
+  min-height: 280px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 183, 213, 0.9), rgba(255, 183, 213, 0) 70%);
+  mix-blend-mode: normal;
+  opacity: 0.34;
+}
+
+.scene__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.95;
+}
+
+.scene__vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 100% at 50% 50%, rgba(255, 255, 255, 0) 46%, rgba(255, 226, 238, 0.55) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 22%);
+}
+
+/* Floating emoji spawned by JS — DOM based so colour emoji always render */
+.fx-emoji {
+  position: fixed;
+  z-index: 41;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 6px 10px rgba(160, 60, 110, 0.28));
+  animation: emojiRise 3.6s var(--ease-out) forwards;
+}
+
+/* Celebration particle canvas sits above the cards but ignores the pointer */
+.fx-canvas {
+  position: fixed;
+  inset: 0;
+  /* Sits behind the cards: confetti drifts through the glass instead of
+     covering the text, which keeps every line readable during the show. */
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   06. LAYOUT & VIEW TRANSITIONS
+   ══════════════════════════════════════════════════════════════════════════ */
+.main {
+  position: relative;
+  z-index: 10;
+}
+
+.view {
+  width: 100%;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2rem);
+}
+
+.view--proposal {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  transition:
+    opacity var(--t-slow) var(--ease-out),
+    transform var(--t-slow) var(--ease-out),
+    filter var(--t-slow) var(--ease-out);
+}
+
+.view--proposal.is-leaving {
+  opacity: 0;
+  transform: scale(0.94) translateY(-14px);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.view--celebration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.6rem, 4vw, 3rem);
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-bottom: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+.view--celebration.is-entering > * {
+  animation: riseIn var(--t-xslow) var(--ease-out) backwards;
+}
+
+.view--celebration.is-entering > *:nth-child(2) { animation-delay: 120ms; }
+.view--celebration.is-entering > *:nth-child(3) { animation-delay: 220ms; }
+.view--celebration.is-entering > *:nth-child(4) { animation-delay: 320ms; }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   07. CARD SHELL — premium glassmorphism
+   ══════════════════════════════════════════════════════════════════════════ */
+.card {
+  position: relative;
+  width: 100%;
+  border-radius: var(--r-xl);
+  padding: clamp(1.75rem, 5vw, 3.25rem) clamp(1.35rem, 5vw, 3rem);
+  text-align: center;
+  background: var(--grad-glass);
+  /* Glassmorphism without backdrop-filter — see the note in section 07 of
+     the README. Same look, dramatically cheaper to paint. */
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  isolation: isolate;
+  transform:
+    perspective(1300px)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg))
+    translateY(var(--lift, 0px));
+  transition: transform var(--t-mid) var(--ease-out), box-shadow var(--t-mid) var(--ease-out);
+  transform-style: preserve-3d;
+}
+
+/* Animated gradient border */
+.card__edge {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 1.6px;
+  border-radius: inherit;
+  background: var(--grad-edge);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Soft light sweep across the glass */
+.card__sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  contain: paint;
+}
+
+.card__sheen::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 60%;
+  height: 220%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: rotate(14deg);
+  animation: sheenSweep 11s var(--ease-in-out) infinite;
+}
+
+.card--proposal {
+  max-width: var(--card-max);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  padding-top: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.card--celebration {
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+/* Entering animation (JS removes the class when it ends so tilt can take over) */
+.card.is-entering {
+  animation: cardIn var(--t-xslow) var(--ease-out) backwards;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   08. MASCOT
+   ══════════════════════════════════════════════════════════════════════════ */
+.mascot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(148px, 40vw, 208px);
+  aspect-ratio: 1;
+  margin-top: 0.25rem;
+}
+
+.mascot__image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow:
+    0 22px 44px -20px rgba(138, 52, 100, 0.55),
+    0 0 0 5px rgba(255, 255, 255, 0.9),
+    0 0 0 9px rgba(255, 183, 213, 0.35);
+  animation: mascotFloat 6.5s var(--ease-in-out) infinite;
+}
+
+.mascot__halo {
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 143, 182, 0.3), rgba(255, 143, 182, 0) 70%),
+    radial-gradient(circle at 70% 30%, rgba(182, 156, 255, 0.26), rgba(182, 156, 255, 0) 72%);
+  animation: haloPulse 5.5s var(--ease-in-out) infinite;
+}
+
+.mascot__ring {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 24px rgba(255, 143, 182, 0.35);
+  pointer-events: none;
+}
+
+.mascot__ring--one { animation: ringPulse 4.5s var(--ease-out) infinite; }
+/* Second ring disabled: it doubled the composited-layer count for a barely
+   visible effect. One soft pulse reads the same at a fraction of the cost. */
+.mascot__ring--two { display: none; }
+
+.mascot__spark {
+  position: absolute;
+  z-index: 3;
+  font-size: 0.9rem;
+  color: var(--white);
+  text-shadow: 0 0 10px rgba(255, 120, 170, 0.9);
+  animation: sparkleSpin 6s var(--ease-in-out) infinite;
+}
+
+.mascot__spark--a { top: 4%;  right: -4%; animation-delay: -1s; }
+.mascot__spark--b { bottom: 8%; left: -6%; animation-delay: -2.6s; color: var(--gold); }
+/* Static instead of animated — saves a layer with no visible difference. */
+.mascot__spark--c { top: 42%; left: -10%; font-size: 0.7rem; animation: none; opacity: 0.7; }
+
+.mascot--happy { width: clamp(132px, 34vw, 176px); }
+.mascot--happy .mascot__image { animation-duration: 4.4s; }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   09. BUTTONS
+   ══════════════════════════════════════════════════════════════════════════ */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+  width: 100%;
+}
+
+.btn {
+  position: relative;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0.9rem 2.2rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--t-mid) var(--ease-spring),
+    box-shadow var(--t-mid) var(--ease-out),
+    filter var(--t-mid) var(--ease-out);
+}
+
+.btn__label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+/* Ripple element injected by JS */
+.ripple {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  transform: translate(-50%, -50%) scale(0);
+  animation: rippleGrow 620ms var(--ease-out) forwards;
+  pointer-events: none;
+}
+
+/* ---- YES button ---- */
+.btn--yes {
+  --btn-scale: 1;
+  color: var(--white);
+  background: var(--grad-rose);
+  background-size: 160% 160%;
+  box-shadow: var(--shadow-rose);
+  text-shadow: 0 1px 2px rgba(150, 20, 60, 0.25);
+  transform: scale(var(--btn-scale));
+}
+
+.btn--yes:hover,
+.btn--yes:focus-visible {
+  box-shadow: var(--shadow-rose-hover);
+  background-position: 100% 0;
+  filter: brightness(1.04);
+}
+
+.btn--yes:hover { transform: scale(calc(var(--btn-scale) * 1.045)); }
+.btn--yes:active { transform: scale(calc(var(--btn-scale) * 0.97)); }
+
+.btn--yes:focus-visible {
+  outline: 3px solid rgba(139, 92, 246, 0.8);
+  outline-offset: 4px;
+}
+
+.btn__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0) 34%, rgba(255, 255, 255, 0.48) 50%, rgba(255, 255, 255, 0) 66%);
+  transform: translateX(-120%);
+  transition: transform 720ms var(--ease-out);
+  pointer-events: none;
+}
+
+.btn--yes:hover .btn__shine,
+.btn--yes:focus-visible .btn__shine { transform: translateX(120%); }
+
+/* playful pulse when the user keeps pressing NO */
+.btn--yes.is-teasing { animation: yesTease 620ms var(--ease-spring); }
+
+/* ---- NO button ---- */
+.btn--no {
+  --no-scale: 1;
+  color: #5B4A72;
+  background: var(--grad-muted);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: scale(var(--no-scale));
+}
+
+.btn--no:hover {
+  filter: brightness(1.05) saturate(1.05);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: scale(calc(var(--no-scale) * 1.02));
+}
+
+.btn--no:active { transform: scale(calc(var(--no-scale) * 0.97)); }
+
+.btn--no.is-wobbling { animation: wobbleNo 520ms var(--ease-in-out); }
+
+/* ---- Ghost / secondary ---- */
+.btn--ghost {
+  color: var(--violet);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1.5px solid rgba(182, 156, 255, 0.55);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(139, 92, 246, 0.7);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn--ghost:active { transform: translateY(0) scale(0.985); }
+
+.btn--compact {
+  min-height: 2.9rem;
+  padding: 0.75rem 1.7rem;
+  font-size: 0.94rem;
+}
+
+.btn--block { width: 100%; }
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   10. PROPOSAL CARD DETAILS
+   ══════════════════════════════════════════════════════════════════════════ */
+.card__hint {
+  margin-top: var(--s-1);
+  font-family: var(--font-script);
+  font-size: 1.12rem;
+  color: var(--ink-faint);
+  transition: color var(--t-mid) var(--ease-out), transform var(--t-mid) var(--ease-out);
+}
+
+.card__hint.is-bumped { animation: hintBump 500ms var(--ease-spring); }
+
+/* Floating hearts that pop out of the card on each NO press (JS spawns these) */
+.petal {
+  position: fixed;
+  z-index: 41;
+  font-size: 1.15rem;
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: petalRise 1500ms var(--ease-out) forwards;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   11. CELEBRATION CARD DETAILS
+   ══════════════════════════════════════════════════════════════════════════ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--r-pill);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: #7A3A5C;
+  background: linear-gradient(120deg, rgba(255, 223, 166, 0.92), rgba(255, 183, 213, 0.9) 55%, rgba(201, 182, 255, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 24px -12px rgba(214, 120, 160, 0.8), var(--shadow-inset);
+  animation: badgeGlow 4.5s var(--ease-in-out) infinite;
+}
+
+.card__title--celebration {
+  background: linear-gradient(100deg, #FF4F87 0%, #FF8FB6 22%, #B69CFF 52%, #8B5CF6 72%, #FFB38A 100%);
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(1.9rem, 5.4vw, 3rem);
+}
+
+/* ---- Love meter ---- */
+.meter {
+  width: 100%;
+  max-width: 468px;
+  padding: 1.1rem 1.25rem 1.2rem;
+  border-radius: var(--r-lg);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.85), rgba(255, 240, 247, 0.62));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
+}
+
+.meter__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.meter__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.meter__heart { animation: heartThump 1.6s var(--ease-in-out) infinite; }
+
+.meter__value {
+  /* Poppins carries a solid infinity glyph; Playfair does not on every system. */
+  font-family: var(--font-ui);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--grad-title);
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.meter__track {
+  position: relative;
+  height: 16px;
+  border-radius: var(--r-pill);
+  background: rgba(182, 156, 255, 0.22);
+  box-shadow: inset 0 2px 5px rgba(112, 31, 79, 0.14);
+  overflow: hidden;
+}
+
+.meter__fill {
+  position: relative;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: var(--grad-meter);
+  background-size: 100% 100%;
+  transition: width 1.4s var(--ease-out);
+  box-shadow: 0 0 18px rgba(255, 79, 135, 0.55);
+}
+
+.meter__glow {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 44px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.92));
+  animation: meterSparkle 2.2s var(--ease-in-out) infinite;
+}
+
+.meter__caption {
+  margin-top: 0.7rem;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.meter__caption strong { color: var(--violet); font-weight: 600; }
+
+/* ---- Feature cards ---- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+  width: 100%;
+  max-width: 660px;
+  margin-top: var(--s-2);
+}
+
+.feature {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1.25rem 0.9rem 1.15rem;
+  border-radius: var(--r-lg);
+  text-align: center;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.55));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+  transition:
+    transform var(--t-mid) var(--ease-spring),
+    box-shadow var(--t-mid) var(--ease-out);
+  animation: featureIn 780ms var(--ease-out) backwards;
+  animation-delay: 420ms;
+  overflow: hidden;
+}
+
+.feature::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 199, 224, 0.55), rgba(255, 199, 224, 0) 62%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.feature:nth-child(2)::before {
+  background: radial-gradient(circle at 50% 0%, rgba(201, 182, 255, 0.5), rgba(201, 182, 255, 0) 62%);
+}
+
+.feature:nth-child(3)::before {
+  background: radial-gradient(circle at 50% 0%, rgba(255, 211, 178, 0.55), rgba(255, 211, 178, 0) 62%);
+}
+
+/* Staggered entrance without inline styles */
+.feature:nth-child(2) { animation-delay: 550ms; }
+.feature:nth-child(3) { animation-delay: 680ms; }
+
+.feature:hover {
+  transform: translateY(-7px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature__icon {
+  position: relative;
+  z-index: 1;
+  font-size: 1.85rem;
+  line-height: 1;
+  animation: featureBob 4.2s var(--ease-in-out) infinite;
+}
+
+.feature:nth-child(2) .feature__icon { animation-delay: -1.4s; }
+.feature:nth-child(3) .feature__icon { animation-delay: -2.8s; }
+
+.feature__title {
+  position: relative;
+  z-index: 1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.feature__text {
+  position: relative;
+  z-index: 1;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--ink-faint);
+}
+
+/* ---- Highlighted quote ---- */
+.quote {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin-top: var(--s-2);
+  padding: 1.25rem 1.75rem 1.25rem 2.4rem;
+  border-radius: var(--r-lg);
+  text-align: left;
+  background: linear-gradient(120deg, rgba(255, 234, 244, 0.95), rgba(247, 238, 255, 0.9) 55%, rgba(255, 243, 226, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
+}
+
+.quote__mark {
+  position: absolute;
+  top: 0.05em;
+  left: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: rgba(182, 156, 255, 0.55);
+}
+
+.quote p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  line-height: 1.55;
+  color: #5A3550;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   12. LOVE LETTER & ENVELOPE
+   ══════════════════════════════════════════════════════════════════════════ */
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  padding: clamp(1.5rem, 4.5vw, 2.75rem);
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.88), rgba(255, 252, 254, 0.7));
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
+}
+
+.panel__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  margin-bottom: var(--s-5);
+}
+
+.panel--letter .panel__head { margin-bottom: var(--s-3); }
+
+/* Stage holds the envelope plus the space the letter rises into */
+.letter-stage {
+  /* These three values are tied together — change one, change all three.
+     --paper-h    height of the letter paper
+     --paper-rise how far it travels up when opened
+     The paper starts 5% down inside the envelope, so the part that stays
+     tucked behind the envelope front is (--paper-h + --paper-rise - 5% of
+     --envelope-h). Everything above that line is readable, which is the
+     greeting and the whole note. */
+  --envelope-w: min(100%, 400px);
+  --envelope-h: 292px;
+  /* The paper only has to hold the greeting and the note now — the signature
+     lives on the envelope, so no extra height or measured shift is needed. */
+  --paper-h: 300px;
+  --paper-rise: -196px;
+
+  position: relative;
+  display: grid;
+  place-items: end center;
+  padding-top: 214px;
+  min-height: calc(var(--envelope-h) + 226px);
+  perspective: 1400px;
+}
+
+/* The bouquet sits below the letter controls and blooms on scroll into view. */
+.letter-bloom {
+  display: grid;
+  place-items: center;
+  height: 290px;
+  margin: 0 auto;
+  opacity: 0;
+  visibility: visible;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.96);
+  transition: opacity 420ms var(--ease-out), transform 520ms var(--ease-out);
+}
+
+.letter-bloom.is-blooming {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition-delay: 0s;
+}
+
+.letter-bloom__flower {
+  position: relative;
+  width: min(100%, 340px);
+  height: 280px;
+  isolation: isolate;
+}
+
+.letter-bloom__bouquet {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  z-index: 1;
+  display: block;
+  font-family: var(--font-ui);
+  font-size: clamp(10rem, 42vw, 13rem);
+  line-height: 1;
+  filter: drop-shadow(0 7px 8px rgba(161, 75, 120, 0.16));
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px) scale(0.42) rotate(-9deg);
+  transform-origin: center bottom;
+}
+
+.letter-bloom.is-blooming .letter-bloom__bouquet {
+  animation: bouquetBloom 900ms var(--ease-spring) 80ms both;
+}
+
+.letter-bloom__ribbon {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 184px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  width: min(90%, 300px);
+  min-height: 78px;
+  padding: 0.5rem 0.75rem 0.45rem;
+  border: 2px solid rgba(255, 255, 255, 0.97);
+  border-radius: 999px;
+  background: linear-gradient(120deg, rgba(255, 226, 190, 0.97), rgba(255, 208, 222, 0.98) 54%, rgba(255, 228, 186, 0.97));
+  box-shadow: 0 7px 18px rgba(161, 75, 120, 0.2), inset 0 0 0 2px rgba(239, 155, 174, 0.2);
+  opacity: 0;
+  transform: translate(-50%, 12px) scale(0.68);
+}
+
+.letter-bloom.is-blooming .letter-bloom__ribbon {
+  animation: ribbonPop 620ms var(--ease-spring) 560ms both;
+}
+
+.letter-bloom__message {
+  display: block;
+  color: #B92E67;
+  font-family: var(--font-script);
+  font-size: clamp(1.2rem, 5.5vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+}
+
+.letter-bloom.is-blooming .letter-bloom__message {
+  animation: bloomWords 1.25s steps(15, end) 1.05s both;
+}
+
+.letter-bloom__tokens {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.4);
+  transform-origin: center;
+}
+
+.letter-bloom.is-blooming .letter-bloom__tokens {
+  animation: bloomEmojis 520ms var(--ease-spring) 2.08s both;
+}
+
+.letter-bloom__spark {
+  position: absolute;
+  z-index: 3;
+  color: #E89B54;
+  font-size: 1.25rem;
+  opacity: 0;
+}
+
+.letter-bloom__spark--one { top: 48px; left: 16px; }
+.letter-bloom__spark--two { top: 72px; right: 10px; color: #D880B1; }
+
+.letter-bloom.is-blooming .letter-bloom__spark {
+  animation: bloomSpark 700ms var(--ease-out) 980ms both;
+}
+
+.letter-stage__floaties {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.letter-stage__floaties span {
+  position: absolute;
+  font-size: 1rem;
+  opacity: 0;
+  animation: floatyEmoji 7s var(--ease-in-out) infinite;
+}
+
+.letter-stage__floaties span:nth-child(1) { left: 6%;  top: 42%; animation-delay: 0s;   font-size: 1.25rem; }
+.letter-stage__floaties span:nth-child(2) { left: 18%; top: 12%; animation-delay: 1.4s; color: var(--blossom); }
+.letter-stage__floaties span:nth-child(3) { right: 8%; top: 30%; animation-delay: 2.6s; font-size: 1.15rem; }
+.letter-stage__floaties span:nth-child(4) { right: 20%; top: 8%; animation-delay: 3.8s; color: var(--gold); }
+.letter-stage__floaties span:nth-child(5) { left: 44%; top: 4%;  animation-delay: 5s; }
+
+/* ---- Envelope assembly ---- */
+.envelope {
+  position: relative;
+  width: var(--envelope-w);
+  height: var(--envelope-h);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 30px 40px rgba(120, 44, 90, 0.26));
+}
+
+.envelope__back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #FFD9E6 0%, #FFC2D8 52%, #F5B0CC 100%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+/* The letter paper */
+.letter-paper {
+  position: absolute;
+  left: 7%;
+  top: 5%;
+  z-index: 2;
+  width: 86%;
+  /* Explicit height (not 92%) so the content area is predictable —
+     the signature needs room that a percentage cannot guarantee. */
+  height: var(--paper-h);
+  border-radius: 14px;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(255, 214, 228, 0.55), rgba(255, 214, 228, 0) 40%),
+    radial-gradient(circle at 86% 88%, rgba(255, 226, 198, 0.55), rgba(255, 226, 198, 0) 46%),
+    repeating-linear-gradient(0deg, rgba(182, 156, 255, 0.06) 0 1px, rgba(255, 255, 255, 0) 1px 22px);
+  border: 1px solid rgba(255, 183, 213, 0.85);
+  box-shadow: 0 16px 30px -18px rgba(120, 44, 90, 0.5);
+  overflow: hidden;
+  /* Trim the paper's hidden tail so no white strip peeks below the envelope
+     when closed. This stays invisible when open because the pocket covers it. */
+  clip-path: inset(0 0 12% 0 round 14px);
+  transform: translateY(0) rotateX(0deg) scale(1);
+  transition:
+    transform 900ms var(--ease-out) 260ms,
+    box-shadow 900ms var(--ease-out) 260ms;
+}
+
+.letter-paper__inner {
+  position: relative;
+  height: 100%;
+  padding: 1.2rem 1.4rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.letter-paper__greeting {
+  font-family: var(--font-script);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  color: var(--rose-deep);
+}
+
+.letter-paper__body {
+  flex: 0 0 auto;              /* never squash the text into the signature */
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  line-height: 1.56;
+  color: #4A2C42;
+  text-wrap: pretty;
+}
+
+/* ---- The handwritten signature ------------------------------------------
+   A framed pink panel sitting on the face of the envelope, below the risen
+   letter. Purely decorative typography: no canvas, no drawing, no input.
+   ---------------------------------------------------------------------- */
+.signature {
+  position: absolute;
+  left: 50%;
+  /* Nudged below centre to clear the letter paper rising above it. */
+  top: 52%;
+  z-index: 4;                 /* above the front pocket, below flap & seal */
+  width: 84%;
+  transform: translate(-50%, -50%) scale(1.06);
+  padding: clamp(1rem, 4.4vw, 1.9rem) clamp(0.9rem, 3.4vw, 1.6rem);
+  border-radius: 14px;
+  text-align: center;
+  background: linear-gradient(168deg, #FFD3E4 0%, #FFC4DA 52%, #FFB9D3 100%);
+  border: 3px solid rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 10px 26px -16px rgba(190, 55, 110, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  pointer-events: none;
+  /* Hidden until the letter opens — see the animation rules below. */
+  opacity: 0;
+}
+
+/* The pale concentric swirls printed on the panel. Pure gradients — nothing
+   is drawn, so this costs no frames. */
+.signature__swirl {
+  position: absolute;
+  inset: -12% -6%;
+  background:
+    repeating-radial-gradient(circle at 50% 46%,
+      rgba(255, 255, 255, 0.34) 0 3px,
+      rgba(255, 255, 255, 0) 3px 15px),
+    repeating-radial-gradient(circle at 42% 52%,
+      rgba(255, 255, 255, 0.2) 0 2px,
+      rgba(255, 255, 255, 0) 2px 19px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.signature__text {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* Fluid so the line never wraps or overflows the panel. */
+  font-size: clamp(1.35rem, 5.6vw, 2.15rem);
+  line-height: 1.16;
+  letter-spacing: 0.005em;
+  color: #C0275F;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* Italic serif for "Loved by"; upright for the name, matching the reference. */
+.signature__words {
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.signature__tagline {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.35rem, 1.6vw, 0.65rem);
+  margin: clamp(0.3rem, 1.4vw, 0.55rem) 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(0.78rem, 2.7vw, 1.05rem);
+  line-height: 1.2;
+  color: #D8477F;
+}
+
+.signature__sub { white-space: nowrap; }
+
+.signature__heart {
+  flex: 0 0 auto;
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 0.85em;
+  line-height: 1;
+  color: rgba(200, 50, 105, 0.55);
+  animation: heartGlow 4s var(--ease-in-out) infinite;
+}
+
+.signature__tagline .signature__heart:last-child { animation-delay: -2s; }
+
+.envelope[data-open='true'] .signature {
+  animation: signatureFadeIn 900ms var(--ease-out) 420ms both,
+             signatureBreathe 7s var(--ease-in-out) 1320ms infinite;
+}
+
+#letter-content.is-swapping ~ .signature,
+.envelope[data-open='true'] #letter-content.is-swapping ~ .signature {
+  animation: signatureFadeIn 700ms var(--ease-out) 120ms both,
+             signatureBreathe 7s var(--ease-in-out) 820ms infinite;
+}
+
+.letter-paper__stamp {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.9rem;
+  font-size: 1.2rem;
+  opacity: 0.85;
+  filter: drop-shadow(0 2px 4px rgba(200, 110, 150, 0.35));
+}
+
+/* Letter content swap animation (JS toggles .is-swapping) */
+#letter-content.is-swapping .letter-paper__body,
+#letter-content.is-swapping .letter-paper__greeting {
+  animation: letterSwap 620ms var(--ease-out);
+}
+
+/* Envelope front pocket */
+.envelope__front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, rgba(255, 226, 237, 0.97) 0%, rgba(255, 199, 219, 0.98) 55%, rgba(247, 176, 202, 1) 100%);
+  clip-path: polygon(0 0, 50% 46%, 100% 0, 100% 100%, 0 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  transition: background var(--t-mid) var(--ease-out);
+  pointer-events: none;
+}
+
+.envelope__seam {
+  position: absolute;
+  left: 0;
+  bottom: 12px;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+  opacity: 0.7;
+}
+
+/* Flap */
+.envelope__flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: 100%;
+  height: 56%;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  background: linear-gradient(180deg, #FFCFE0 0%, #FFB6CE 70%, #F79DBE 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 8px 18px -12px rgba(120, 44, 90, 0.6);
+  transition: transform 720ms var(--ease-in-out), z-index 0s linear 360ms;
+  backface-visibility: visible;
+  pointer-events: none;
+}
+
+/* Wax seal */
+.envelope__seal {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  background: radial-gradient(circle at 34% 28%, #FF9CBE, #FF4F87 58%, #D4265E 100%);
+  box-shadow:
+    0 8px 18px -8px rgba(180, 30, 80, 0.8),
+    inset 0 0 0 3px rgba(255, 255, 255, 0.4);
+  transition:
+    opacity 380ms var(--ease-out),
+    transform 520ms var(--ease-spring);
+  pointer-events: none;
+}
+
+/* ---- OPEN STATE ---- */
+.envelope[data-open='true'] .envelope__flap {
+  transform: rotateX(-176deg);
+  z-index: 1;
+  transition: transform 760ms var(--ease-in-out), z-index 0s linear 0s;
+}
+
+.envelope[data-open='true'] .envelope__seal {
+  opacity: 0;
+  transform: translateY(-14px) scale(0.72) rotate(-18deg);
+}
+
+.envelope[data-open='true'] .letter-paper {
+  /* Stays at z-index 2 (behind .envelope__front) so the lower half of the
+     paper remains tucked inside the envelope while the top slides out. */
+  /* Height is NOT changed here on purpose: the note always fits inside the
+     paper, and the part below the envelope's top edge stays hidden exactly
+     like real paper in a real envelope. */
+  transform: translateY(var(--paper-rise)) rotateX(0deg) scale(1.01);
+  box-shadow: 0 34px 60px -28px rgba(120, 44, 90, 0.55);
+}
+
+/* Controls & progress */
+.letter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.letter-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: var(--s-4);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  opacity: 0;
+  transition: opacity var(--t-mid) var(--ease-out);
+}
+
+.letter-progress.is-visible { opacity: 1; }
+
+.letter-progress__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.letter-progress__dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(182, 156, 255, 0.35);
+  transition: background var(--t-mid) var(--ease-out), transform var(--t-mid) var(--ease-spring);
+}
+
+.letter-progress__dots i.is-current {
+  background: var(--grad-rose);
+  transform: scale(1.35);
+  box-shadow: 0 0 10px rgba(255, 79, 135, 0.6);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   13. FOOTER & MISC
+   ══════════════════════════════════════════════════════════════════════════ */
+.footer {
+  width: 100%;
+  text-align: center;
+  padding-top: var(--s-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.footer__line {
+  font-family: var(--font-script);
+  font-size: 1.25rem;
+  color: #6B4360;
+}
+
+.footer__sep { opacity: 0.5; margin-inline: 0.3rem; }
+
+.footer__link {
+  color: var(--violet);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.35);
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+
+.footer__link:hover {
+  color: var(--rose-deep);
+  border-color: rgba(230, 46, 103, 0.5);
+}
+
+.footer__small {
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   14. KEYFRAMES
+   ══════════════════════════════════════════════════════════════════════════ */
+/* translate3d only. A scale() keyframe on a layer this large forces a
+   re-rasterise every frame; translation is handled by the compositor alone. */
+@keyframes sheenSweep {
+  0%, 62%   { transform: translateX(-60%) rotate(14deg); opacity: 0; }
+  70%       { opacity: 0.9; }
+  100%      { transform: translateX(320%) rotate(14deg); opacity: 0; }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: perspective(1300px) translateY(38px) scale(0.955); }
+  to   { opacity: 1; transform: perspective(1300px) translateY(0) scale(1); }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes featureIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
+  50%      { transform: translateY(-7px) rotate(1.2deg); }
+}
+
+@keyframes haloPulse {
+  0%, 100% { opacity: 0.75; transform: scale(0.97); }
+  50%      { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes ringPulse {
+  0%   { transform: scale(0.86); opacity: 0; }
+  35%  { opacity: 0.85; }
+  100% { transform: scale(1.28); opacity: 0; }
+}
+
+@keyframes sparkleSpin {
+  0%, 100% { transform: scale(0.7) rotate(0deg); opacity: 0.45; }
+  50%      { transform: scale(1.1) rotate(90deg); opacity: 1; }
+}
+
+/* transform/opacity only — a box-shadow keyframe would repaint every frame */
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.45); }
+}
+
+@keyframes heartThump {
+  0%, 100% { transform: scale(1); }
+  18%      { transform: scale(1.22); }
+  36%      { transform: scale(0.98); }
+  54%      { transform: scale(1.12); }
+}
+
+@keyframes badgeGlow {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.035); }
+}
+
+@keyframes meterSparkle {
+  0%, 100% { opacity: 0.35; transform: translateX(-6px); }
+  50%      { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes featureBob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-6px) rotate(3deg); }
+}
+
+@keyframes yesTease {
+  0%   { transform: scale(var(--btn-scale)); }
+  30%  { transform: scale(calc(var(--btn-scale) * 1.16)) rotate(-2.5deg); }
+  60%  { transform: scale(calc(var(--btn-scale) * 0.96)) rotate(2deg); }
+  100% { transform: scale(var(--btn-scale)); }
+}
+
+@keyframes wobbleNo {
+  0%, 100% { transform: scale(var(--no-scale)) rotate(0deg); }
+  20%      { transform: scale(var(--no-scale)) rotate(-7deg); }
+  45%      { transform: scale(var(--no-scale)) rotate(6deg); }
+  70%      { transform: scale(var(--no-scale)) rotate(-3.5deg); }
+}
+
+@keyframes hintBump {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-4px) scale(1.06); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes petalRise {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0) scale(0.6) rotate(0deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--dx, 0px), -160px, 0) scale(1.15) rotate(var(--rot, 20deg)); }
+}
+
+@keyframes emojiRise {
+  0%   { opacity: 0; transform: translate3d(0, 12vh, 0) scale(0.55) rotate(-8deg); }
+  18%  { opacity: 1; }
+  75%  { opacity: 0.95; }
+  100% { opacity: 0; transform: translate3d(var(--drift, 0px), -58vh, 0) scale(1.15) rotate(10deg); }
+}
+
+@keyframes rippleGrow {
+  from { transform: translate(-50%, -50%) scale(0); opacity: 0.65; }
+  to   { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+}
+
+@keyframes floatyEmoji {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.8); }
+  25%  { opacity: 0.9; }
+  70%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-34px) scale(1.1); }
+}
+
+/* The panel settles into place as the letter opens. The resting transform
+   must match .signature, otherwise the panel jumps when the animation ends. */
+@keyframes signatureFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 12px)) scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+/* A barely-there float, so it feels alive without drawing attention. */
+@keyframes signatureBreathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.06); }
+  50%      { transform: translate(-50%, calc(-50% - 5px)) scale(1.06); }
+}
+
+/* Hearts pulse with transform/opacity only — no filter, no repaint. */
+@keyframes heartGlow {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50%      { transform: scale(1.22); opacity: 1; }
+}
+
+@keyframes bouquetBloom {
+  0% { opacity: 0; transform: translateX(-50%) translateY(12px) scale(0.42) rotate(-9deg); }
+  72% { opacity: 1; transform: translateX(-50%) translateY(-3px) scale(1.06) rotate(2deg); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1) rotate(0deg); }
+}
+
+@keyframes ribbonPop {
+  0% { opacity: 0; transform: translate(-50%, 12px) scale(0.68); }
+  75% { opacity: 1; transform: translate(-50%, -2px) scale(1.04); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@keyframes bloomWords {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes bloomEmojis {
+  0% { opacity: 0; transform: scale(0.4); }
+  70% { opacity: 1; transform: scale(1.22); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bloomSpark {
+  0% { opacity: 0; transform: scale(0.35) rotate(-24deg); }
+  65% { opacity: 1; transform: scale(1.22) rotate(8deg); }
+  100% { opacity: 0.8; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes letterSwap {
+  0%   { opacity: 1; transform: translateY(0); }
+  35%  { opacity: 0; transform: translateY(-10px); }
+  36%  { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-7px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(3px); }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   15. RESPONSIVE BREAKPOINTS
+   Tested at 360 / 390 / 430 / 768 / 1024 / 1440
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ---- Large desktop tweaks ---- */
+@media (min-width: 1280px) {
+  :root { --card-max: 640px; }
+  .view--celebration { gap: 3.25rem; }
+}
+
+/* ---- Tablet landscape / small laptop ---- */
+@media (max-width: 1024px) {
+}
+
+/* ---- Tablet portrait ---- */
+@media (max-width: 820px) {
+  .panel { max-width: 100%; }
+
+  .features {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .feature { padding: 1.05rem 0.7rem 1rem; }
+  .feature__text { font-size: 0.72rem; }
+}
+
+/* ---- Small tablet / large phone ---- */
+@media (max-width: 768px) {
+  .view { padding-inline: clamp(0.85rem, 3.5vw, 1.4rem); }
+
+  .card--celebration { gap: var(--s-3); }
+
+
+  .letter-paper__inner { padding: 1rem 1.1rem 1.15rem; }
+  .letter-paper__body { font-size: 0.9rem; line-height: 1.58; }
+  .letter-paper__greeting { font-size: 1.2rem; }
+  .signature {
+    width: 88%;
+    padding: 0.85rem 0.8rem;
+    border-width: 2.5px;
+  }
+}
+
+/* ---- Phones ---- */
+@media (max-width: 620px) {
+  html { font-size: 15px; }
+
+  /* The paper is taller than the window on a phone, so the letter is allowed
+     to scroll inside the page instead of being cropped. */
+  .letter-stage {
+    --envelope-w: min(100%, 340px);
+    --envelope-h: 280px;
+    --paper-h: 292px;
+    --paper-rise: -192px;
+    padding-top: 210px;
+    min-height: calc(var(--envelope-h) + 222px);
+  }
+
+  /* A phone paper is much narrower, so the same note wraps to ~6 lines and
+     the signature to ~2. Sized from that: 6 x 20 + 74 + padding = 255. */
+
+  .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* A narrower pill leaves headroom for the "Yes" button to grow on press
+     without ever pushing past the card edge. */
+  .btn { width: 100%; max-width: 250px; }
+  .actions .btn { max-width: 250px; }
+
+  .features {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    max-width: 340px;
+  }
+
+  /* Stacked cards become icon + two text rows (never three columns). */
+  .feature {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 0.85rem;
+    row-gap: 0.1rem;
+    text-align: left;
+    padding: 0.9rem 1rem;
+  }
+
+  .feature__icon { grid-row: 1 / span 2; grid-column: 1; }
+  .feature__title { grid-column: 2; grid-row: 1; }
+  .feature__text { grid-column: 2; grid-row: 2; }
+
+  .feature__icon { font-size: 1.5rem; }
+
+  .feature__title { font-size: 0.74rem; }
+
+  .feature__text {
+    font-size: 0.72rem;
+    margin-top: 0.1rem;
+  }
+
+  .quote { padding: 1.1rem 1.25rem 1.1rem 2.1rem; }
+
+
+  .letter-paper { left: 5%; width: 90%; top: 4%; }
+  .letter-paper__inner { padding: 0.9rem 1rem 1rem; gap: 0.35rem; }
+  .letter-paper__body { font-size: 0.85rem; line-height: 1.55; }
+  .letter-paper__greeting { font-size: 1.1rem; }
+  /* The panel keeps its own clamp() sizing; only the padding tightens. */
+  .signature {
+    padding: 0.75rem 0.6rem;
+    border-radius: 12px;
+    border-width: 2.5px;
+  }
+  .letter-paper__stamp { font-size: 1rem; top: 0.6rem; right: 0.7rem; }
+  .envelope__seal { width: 40px; height: 40px; margin: -20px 0 0 -20px; font-size: 1rem; }
+
+  .letter-controls .btn { max-width: 100%; }
+
+  .meter { padding: 0.95rem 1rem 1rem; }
+  .meter__value { font-size: 1.65rem; }
+
+  .panel { padding: 1.35rem 1.1rem 1.5rem; border-radius: var(--r-lg); }
+  .card { border-radius: var(--r-lg); }
+
+  .toast { width: calc(100% - 2rem); justify-content: center; }
+}
+
+/* ---- Very small phones (360px and below) ---- */
+@media (max-width: 400px) {
+  html { font-size: 14.5px; }
+
+  .card { padding-inline: 1.05rem; }
+
+  .eyebrow { font-size: 0.62rem; letter-spacing: 0.14em; padding: 0.45rem 0.85rem; }
+
+  .card__title { font-size: clamp(1.9rem, 9vw, 2.4rem); }
+
+
+  .letter-paper__body { font-size: 0.8rem; line-height: 1.52; }
+
+  .mascot { width: clamp(128px, 42vw, 168px); }
+  .mascot--happy { width: clamp(112px, 34vw, 150px); }
+}
+
+/* ---- Short landscape screens ---- */
+@media (max-height: 620px) and (orientation: landscape) {
+  .view--proposal { padding-block: 1rem; }
+  .mascot { width: 110px; }
+  .card--proposal { gap: 0.6rem; }
+  .card__title { font-size: clamp(1.7rem, 4.4vw, 2.2rem); }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   16. REDUCED MOTION
+   Everything still works, it just stops moving.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .card,
+  .card.is-entering {
+    transform: none !important;
+    opacity: 1;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .letter-paper {
+    transition: none;
+  }
+
+  /* With motion off the panel must simply be there when the letter opens —
+     and must stay hidden while it is closed. The resting transform is kept
+     (it carries the centring); only the animation is dropped. */
+  .signature {
+    animation: none !important;
+    transform: translate(-50%, -50%) scale(1.06) !important;
+  }
+
+  .envelope[data-open='true'] .signature {
+    opacity: 1 !important;
+  }
+
+  .signature__heart { animation: none !important; }
+
+  .letter-bloom { transition: none !important; }
+  .letter-bloom.is-blooming .letter-bloom__bouquet {
+    animation: none !important;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1) rotate(0deg);
+  }
+  .letter-bloom.is-blooming .letter-bloom__ribbon {
+    animation: none !important;
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  .letter-bloom.is-blooming .letter-bloom__message {
+    animation: none !important;
+    clip-path: none;
+  }
+  .letter-bloom.is-blooming .letter-bloom__tokens {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .letter-bloom.is-blooming .letter-bloom__spark {
+    animation: none !important;
+    opacity: 0.8;
+  }
+
+  .envelope[data-open='true'] .letter-paper {
+    transform: translateY(var(--paper-rise));
+  }
+
+  .aurora,
+  .mascot__image,
+  .mascot__ring,
+  .mascot__halo,
+  .feature__icon,
+  .meter__heart { animation: none !important; }
+}

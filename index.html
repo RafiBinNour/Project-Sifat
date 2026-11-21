@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FF4F87" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <!-- Only the origins this site actually needs: its own files, the Supabase
+       REST/auth API, and inline SVG data URIs. Everything else is blocked. -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'" />
+  <meta name="description"
+    content="Love in Bloom — a dreamy, interactive romantic experience. Ask the sweetest question, open a little love letter and leave a message of your own." />
+  <title>Love in Bloom · A Little Question For You</title>
+
+  <!-- Local fonts (offline friendly). If you prefer Google Fonts, swap this for a CDN link. -->
+  <!-- Preload the only two font files the first screen needs. -->
+  <link rel="preload" href="assets/fonts/files/Poppins-400-normal-latin.woff2" as="font" type="font/woff2"
+    crossorigin />
+  <link rel="preload" href="assets/fonts/files/PlayfairDisplay-700-normal-latin.woff2" as="font" type="font/woff2"
+    crossorigin />
+  <link rel="stylesheet" href="assets/fonts/fonts.css" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Emoji favicon, no external request -->
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%97%3C/text%3E%3C/svg%3E" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       1. ANIMATED BACKGROUND SCENE (purely decorative)
+       Aurora blobs are CSS, sparkles / hearts / bubbles are drawn in Canvas.
+       ══════════════════════════════════════════════════════════════════ -->
+  <div class="scene" aria-hidden="true">
+    <div class="scene__aurora">
+      <span class="aurora aurora--rose"></span>
+      <span class="aurora aurora--violet"></span>
+      <span class="aurora aurora--peach"></span>
+      <span class="aurora aurora--gold"></span>
+      <span class="aurora aurora--blossom"></span>
+    </div>
+    <canvas id="ambient-canvas" class="scene__canvas"></canvas>
+    <div class="scene__vignette"></div>
+  </div>
+
+  <!-- Celebration particle layer (confetti, fireworks, hearts) -->
+  <canvas id="fx-canvas" class="fx-canvas" aria-hidden="true"></canvas>
+
+  <main id="main" class="main">
+    <!-- ════════════════════════════════════════════════════════════════
+         2. VIEW A — THE PROPOSAL
+         ════════════════════════════════════════════════════════════════ -->
+    <section id="proposal-view" class="view view--proposal is-active" aria-labelledby="proposal-title">
+      <article id="proposal-card" class="card card--proposal" data-tilt>
+        <span class="card__edge" aria-hidden="true"></span>
+        <span class="card__sheen" aria-hidden="true"></span>
+
+        <div class="mascot">
+          <span class="mascot__halo" aria-hidden="true"></span>
+          <span class="mascot__ring mascot__ring--one" aria-hidden="true"></span>
+          <span class="mascot__ring mascot__ring--two" aria-hidden="true"></span>
+          <img class="mascot__image" src="assets/images/bear-ask.svg" width="260" height="260"
+            alt="A shy little teddy bear with rosy cheeks, waving one paw and hugging a beating pink heart." />
+          <span class="mascot__spark mascot__spark--a" aria-hidden="true">✦</span>
+          <span class="mascot__spark mascot__spark--b" aria-hidden="true">✦</span>
+          <span class="mascot__spark mascot__spark--c" aria-hidden="true">✧</span>
+        </div>
+
+        <p class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          A little question for you
+          <span aria-hidden="true">✨</span>
+        </p>
+
+        <h1 id="proposal-title" class="card__title" tabindex="-1">Do You Love&nbsp;Me?</h1>
+
+        <p class="card__subtitle">
+          My heart has something special to ask you&hellip; <span aria-hidden="true">🥺</span>
+        </p>
+
+        <div class="actions" role="group" aria-label="Answer the question">
+          <button id="yes-btn" class="btn btn--yes" type="button">
+            <span class="btn__shine" aria-hidden="true"></span>
+            <span class="btn__label">Yes! <span aria-hidden="true">❤️</span></span>
+          </button>
+
+          <button id="no-btn" class="btn btn--no" type="button">
+            <span class="btn__label">No <span aria-hidden="true">💔</span></span>
+          </button>
+        </div>
+
+        <p class="card__hint" id="proposal-hint">psst&hellip; one of these buttons is a little shy 😌</p>
+
+        <!-- Screen-reader only feedback for the playful NO interactions -->
+        <p class="sr-only" id="playful-status" role="status" aria-live="polite"></p>
+      </article>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         3. VIEW B — THE CELEBRATION JOURNEY
+         ════════════════════════════════════════════════════════════════ -->
+    <section id="celebration-view" class="view view--celebration" aria-labelledby="celebration-title" hidden>
+      <!-- ── 3a. Celebration card ─────────────────────────────────── -->
+      <article class="card card--celebration" data-tilt>
+        <span class="card__edge" aria-hidden="true"></span>
+        <span class="card__sheen" aria-hidden="true"></span>
+
+        <p class="badge">
+          <span aria-hidden="true">💞</span>
+          The sweetest yes
+          <span aria-hidden="true">💞</span>
+        </p>
+
+        <div class="mascot mascot--happy">
+          <span class="mascot__halo" aria-hidden="true"></span>
+          <img class="mascot__image" src="assets/images/bear-happy.svg" width="260" height="260"
+            alt="A joyful teddy bear cheering with both paws in the air, surrounded by confetti and floating hearts." />
+        </div>
+
+        <h1 id="celebration-title" class="card__title card__title--celebration" tabindex="-1">
+          I Knew It! <span aria-hidden="true">🥰</span>
+        </h1>
+
+        <p class="card__subtitle">
+          You just made this moment a little more magical!
+        </p>
+
+        <!-- Love meter -->
+        <div class="meter" role="group" aria-labelledby="meter-label">
+          <div class="meter__head">
+            <span class="meter__label" id="meter-label">
+              <span class="meter__heart" aria-hidden="true">💗</span> Our love meter
+            </span>
+            <span class="meter__value" id="meter-value" aria-hidden="true">∞</span>
+          </div>
+          <div class="meter__track">
+            <div class="meter__fill" id="meter-fill">
+              <span class="meter__glow" aria-hidden="true"></span>
+            </div>
+          </div>
+          <p class="meter__caption">Reading: <strong>off the charts</strong>, as expected 💫</p>
+          <span class="sr-only" id="meter-accessible">Our love meter is at maximum, it cannot be measured.</span>
+        </div>
+
+        <!-- Three feature cards -->
+        <ul class="features" role="list">
+          <li class="feature">
+            <span class="feature__icon" aria-hidden="true">🌷</span>
+            <h2 class="feature__title">So Much Joy</h2>
+            <p class="feature__text">Enough sparkle to light up a whole week.</p>
+          </li>
+          <li class="feature">
+            <span class="feature__icon" aria-hidden="true">✨</span>
+            <h2 class="feature__title">Endless Dreams</h2>
+            <p class="feature__text">A thousand little plans waiting for us.</p>
+          </li>
+          <li class="feature">
+            <span class="feature__icon" aria-hidden="true">💗</span>
+            <h2 class="feature__title">One Special Moment</h2>
+            <p class="feature__text">The kind we will keep telling stories about.</p>
+          </li>
+        </ul>
+
+        <blockquote class="quote">
+          <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+          <p>You&rsquo;re a little piece of magic in this world. <span aria-hidden="true">💖</span></p>
+        </blockquote>
+      </article>
+
+      <!-- ── 3b. The love letter ──────────────────────────────────── -->
+      <section class="panel panel--letter reveal" aria-labelledby="letter-title">
+        <header class="panel__head">
+          <p class="eyebrow eyebrow--tight"><span aria-hidden="true">💌</span> A letter for you</p>
+          <h2 id="letter-title" class="panel__title">Open your little surprise</h2>
+          <p class="panel__subtitle">Five notes are hidden inside. Keep opening to find them all.</p>
+        </header>
+
+        <div class="letter-stage" id="letter-stage">
+          <div class="letter-stage__floaties" aria-hidden="true">
+            <span>💗</span><span>✦</span><span>💞</span><span>✧</span><span>🌸</span>
+          </div>
+
+          <div class="envelope" id="envelope" data-open="false">
+            <div class="envelope__back" aria-hidden="true"></div>
+
+            <!-- The paper -->
+            <article class="letter-paper" id="letter-paper" aria-live="polite">
+              <div class="letter-paper__inner" id="letter-content">
+                <p class="letter-paper__greeting">My dearest,</p>
+                <p class="letter-paper__body">
+                  Some feelings are too big for a text message, so I wrote them here instead.
+                  You are my favourite hello and my hardest goodbye.
+                </p>
+                <span class="letter-paper__stamp" aria-hidden="true">💌</span>
+              </div>
+            </article>
+
+            <!-- The signature sits on the envelope itself, in its own framed
+                 pink panel — like a name written across the front of a letter. -->
+            <div class="signature">
+              <span class="signature__swirl" aria-hidden="true"></span>
+
+              <p class="signature__text">
+                <span class="signature__words">Loved by Sifat</span>
+              </p>
+
+              <p class="signature__tagline">
+                <span class="signature__heart" aria-hidden="true">♡</span>
+                <span class="signature__sub">Forever with love</span>
+                <span class="signature__heart" aria-hidden="true">♡</span>
+              </p>
+            </div>
+
+            <div class="envelope__front" aria-hidden="true">
+              <span class="envelope__seam"></span>
+            </div>
+            <div class="envelope__flap" aria-hidden="true"></div>
+            <div class="envelope__seal" aria-hidden="true">💗</div>
+          </div>
+        </div>
+
+        <div class="letter-controls">
+          <button id="letter-toggle" class="btn btn--yes btn--compact" type="button" aria-expanded="false"
+            aria-controls="envelope">
+            <span class="btn__shine" aria-hidden="true"></span>
+            <span class="btn__label">Open your little surprise 💌</span>
+          </button>
+          <button id="another-note" class="btn btn--ghost btn--compact" type="button" hidden>
+            <span class="btn__label">Read another note 💗</span>
+          </button>
+        </div>
+
+        <p class="letter-progress" id="letter-progress" aria-hidden="true">
+          <span class="letter-progress__dots"></span>
+          <span class="letter-progress__text">Note 1 of 5</span>
+        </p>
+
+        <div class="letter-bloom" id="letter-bloom" aria-hidden="true">
+          <div class="letter-bloom__flower" role="img" aria-label="Bouquet: Sifat loves you, with hearts and infinity">
+            <span class="letter-bloom__bouquet" aria-hidden="true">💐</span>
+            <span class="letter-bloom__spark letter-bloom__spark--one" aria-hidden="true">✦</span>
+            <span class="letter-bloom__spark letter-bloom__spark--two" aria-hidden="true">✧</span>
+            <div class="letter-bloom__ribbon">
+              <span class="letter-bloom__message">Sifat loves you</span>
+              <span class="letter-bloom__tokens" aria-hidden="true">💞♾️</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p class="footer__line">Made with too much love and just enough CSS. <span aria-hidden="true">💗</span></p>
+        <p class="footer__small">&copy; <span id="year">2025</span> Love in Bloom</p>
+      </footer>
+    </section>
+  </main>
+
+  <noscript>
+    <p class="noscript">This little love story needs JavaScript to bloom. Please enable it and refresh 💗</p>
+  </noscript>
+
+  <!-- One local script, no third-party code, nothing blocking. -->
+  <script src="js/script.js" defer></script>
+</body>
+
+</html>
