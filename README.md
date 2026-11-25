@@ -39,7 +39,7 @@ no database, no cookies, no third-party requests. Open `index.html` and it works
 | **The growing Yes** | Grows every time No is clicked — by the end it dominates the card. |
 | **Celebration** | Confetti, fireworks, floating hearts, a love meter that fills to ∞, three feature cards, a pull quote. |
 | **The letter** | A pink envelope that swings open to reveal five different notes you can flip through. |
-| **The signature** | A framed pink panel printed across the envelope face: *Loved by Sifat* in italic display serif, with "Forever with love" beneath it, pale concentric swirls behind, and a gentle fade-in. |
+| **The signature** | A framed pink panel printed across the envelope face: *Loved by **** in italic display serif, with "Forever with love" beneath it, pale concentric swirls behind, and a gentle fade-in. |
 | **The bouquet** | A larger 💐-style bouquet sits below the letter buttons and blooms when scrolled into view at the page end; its ribbon types out "Sifat loves you" above 💞♾️. |
 | **Ambient scene** | Floating hearts, stars and soap bubbles on a canvas behind everything. |
 | **Reduced motion** | Decorative motion stops; the signature and the completed flower message stay visible without animation. |
